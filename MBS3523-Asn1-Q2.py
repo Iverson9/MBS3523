@@ -1,78 +1,35 @@
-import cv2, random
+import cv2, random, numpy as np
 
-xaxis = 640
-yaxis = 480
+
 capture = cv2.VideoCapture(0)
-capture.set(3, xaxis)
-capture.set(4, yaxis)
-dx = -1
-dy = -1
+
+width = 640
+height = 480
 size = 80 # size of the square (must be within x y)
 thicc = 3 # thickness of the square
 color = [255, 255, 255]
-xcord1 = random.randint(0, xaxis - size)
-ycord1 = random.randint(0, yaxis - size)
-xcord2 = xcord1 + size
-ycord2 = ycord1 + size
-
+xc1 = random.randint(0, width - size)
+yc1 = random.randint(0, height - size)
+xc2 = xc1 + size
+yc2 = yc1 + size
+dx = 1
+dy = 1
 
 while True:
     success, img = capture.read(0)
-    # img = np.zeros((xaxis, yaxis, 3), dtype=np.uint8) #for non-cam
-    # print('dx=' + str(dx))
-    # print('dy=' + str(dy))
-    # print('xcord1 = ' + str(xcord1))
-    # print('ycord1 = ' + str(ycord1))
-    cv2.rectangle(img, (xcord1, ycord1), (xcord2, ycord2), color, thicc)
-    xcord1 += dx
-    xcord2 += dx
-    ycord1 += dy
-    ycord2 += dy
+    #img = np.zeros((height, width, 3), dtype=np.uint8) #for non-cam
+    cv2.rectangle(img, (xc1, yc1), (xc2, yc2), color, thicc)
+    xc1 += dx
+    xc2 += dx
+    yc1 += dy
+    yc2 += dy
+    if xc1 >= width - size - thicc or xc1 <= 0:
+        dx = dx * (-1)
+        color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+    if yc1 >= height - size - thicc or yc1 <= 0:
+        dy = dy * (-1)
+        color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
 
-    if dx == 1 and dy == 1:
-        if xcord1 >= xaxis - thicc - size:
-            dx *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if ycord1 >= yaxis - thicc - size:
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if xcord1 == xaxis + thicc and ycord1 == yaxis + thicc:
-            dx *= -1
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-    if dx == 1 and dy == -1:
-        if xcord1 >= xaxis - thicc - size:
-            dx *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if ycord1 <= 0 + thicc:
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if xcord1 == xaxis + thicc and ycord1 == 0 + thicc:
-            dx *= -1
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-    if dx == -1 and dy == 1:
-        if xcord1 <= 0 + thicc:
-            dx *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if ycord1 >= yaxis - thicc - size:
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if xcord1 == 0 + thicc and ycord1 == yaxis + thicc:
-            dx *= -1
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-    if dx == -1 and dy == -1:
-        if xcord1 <= 0 + thicc:
-            dx *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if ycord1 <= 0 + thicc:
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-        if xcord1 == 0 + thicc and ycord1 == 0 + thicc:
-            dx *= -1
-            dy *= -1
-            color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
     cv2.imshow('Frame', img)
     if cv2.waitKey(1) & 0xff == ord('q'):
         break
